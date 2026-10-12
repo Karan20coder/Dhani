@@ -15,6 +15,7 @@ import { Profile } from "./pages/Profile";
 import { Settings } from "./pages/Settings";
 import { Onboarding } from "./pages/Onboarding";
 import { Assistant } from "./pages/Assistant";
+import { BeyondStocks } from "./pages/BeyondStocks";
 
 import { useState } from "react";
 import { Loader2, Mail, RefreshCw, LogOut, ShieldAlert, CheckCircle } from "lucide-react";
@@ -225,6 +226,7 @@ const App: React.FC = () => {
               >
                 <Route index element={<Dashboard />} />
                 <Route path="portfolio" element={<Portfolio />} />
+                <Route path="beyond-stocks" element={<BeyondStocks />} />
                 <Route path="intelligence" element={<Intelligence />} />
                 <Route path="investments" element={<Investments />} />
                 <Route path="learning" element={<Learning />} />

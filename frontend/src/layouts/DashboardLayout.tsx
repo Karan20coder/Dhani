@@ -16,7 +16,8 @@ import {
   User,
   MessageSquare,
   Sun,
-  Moon
+  Moon,
+  Compass
 } from "lucide-react";
 
 
@@ -48,6 +49,7 @@ export const DashboardLayout: React.FC = () => {
   const navigation = [
     { name: "Dashboard", href: "/", icon: LayoutDashboard },
     { name: "Portfolio", href: "/portfolio", icon: Briefcase },
+    { name: "Beyond Stocks", href: "/beyond-stocks", icon: Compass },
     { name: "Intelligence", href: "/intelligence", icon: BrainCircuit },
     { name: "Investment Hub", href: "/investments", icon: TrendingUp },
     { name: "Learning Center", href: "/learning", icon: GraduationCap },
@@ -176,11 +178,36 @@ export const DashboardLayout: React.FC = () => {
         </header>
 
         {/* Scrollable Page Body */}
-        <main className="flex-1 p-6 overflow-y-auto">
+        <main className="flex-1 p-6 pb-24 md:pb-6 overflow-y-auto">
           <div className="max-w-6xl mx-auto">
             <Outlet />
           </div>
         </main>
+
+        {/* Mobile Bottom Tab Bar */}
+        <div className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-zinc-950/90 backdrop-blur-md border-t border-zinc-850 z-40 px-3 flex items-center justify-around">
+          {[
+            { name: "Dashboard", href: "/", icon: LayoutDashboard },
+            { name: "Portfolio", href: "/portfolio", icon: Briefcase },
+            { name: "Beyond", href: "/beyond-stocks", icon: Compass },
+            { name: "Assistant", href: "/assistant", icon: MessageSquare },
+            { name: "Hub", href: "/investments", icon: TrendingUp },
+          ].map((tab) => {
+            const isActive = location.pathname === tab.href;
+            return (
+              <Link
+                key={tab.name}
+                to={tab.href}
+                className={`flex flex-col items-center justify-center gap-1 py-1 px-2 rounded-lg transition-colors ${
+                  isActive ? "text-blue-400 font-semibold" : "text-zinc-500 hover:text-zinc-300"
+                }`}
+              >
+                <tab.icon className="w-5 h-5" />
+                <span className="text-[10px]">{tab.name}</span>
+              </Link>
+            );
+          })}
+        </div>
       </div>
 
       {/* Mobile Sidebar overlay / drawer */}

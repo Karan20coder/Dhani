@@ -26,6 +26,7 @@ import {
   Sparkles,
   PieChart as PieIcon
 } from "lucide-react";
+import { PortfolioValueGrowthAreaChart } from "@/components/ui/area-chart";
 
 const COLORS = ["#6366f1", "#10b981", "#8b5cf6", "#f59e0b", "#ec4899", "#06b6d4", "#a1a1aa"];
 
@@ -33,6 +34,7 @@ export const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const { holdings } = usePortfolio();
   const { analytics, loading } = useIntelligence();
+  const [chartView, setChartView] = React.useState<"reaviz" | "standard">("reaviz");
 
   // Metrics calculations
   const totalCost = holdings.reduce((acc, curr) => acc + (curr.quantity * curr.avgPrice), 0);
@@ -234,53 +236,87 @@ export const Dashboard: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Portfolio Growth Trend */}
             <div className="lg:col-span-2 bg-zinc-900 border border-zinc-800/80 p-6 rounded-xl space-y-4">
-              <div>
-                <h3 className="text-sm font-semibold text-zinc-200">Portfolio Value Growth</h3>
-                <p className="text-[11px] text-zinc-500 mt-0.5">Simulated historical trend based on current holdings.</p>
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                <div>
+                  <h3 className="text-sm font-semibold text-zinc-200">Portfolio Value Growth</h3>
+                  <p className="text-[11px] text-zinc-500 mt-0.5">Performance trajectory and efficiency analytics.</p>
+                </div>
+                <div className="flex bg-zinc-950 border border-zinc-800 p-0.5 rounded-lg text-[11px]">
+                  <button
+                    onClick={() => setChartView("reaviz")}
+                    className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                      chartView === "reaviz"
+                        ? "bg-zinc-800 text-zinc-100 font-semibold shadow-sm"
+                        : "text-zinc-400 hover:text-zinc-200"
+                    }`}
+                  >
+                    Reaviz Metrics
+                  </button>
+                  <button
+                    onClick={() => setChartView("standard")}
+                    className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                      chartView === "standard"
+                        ? "bg-zinc-800 text-zinc-100 font-semibold shadow-sm"
+                        : "text-zinc-400 hover:text-zinc-200"
+                    }`}
+                  >
+                    Monthly Trend
+                  </button>
+                </div>
               </div>
-              <div className="h-64 pr-2">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={trendData}>
-                    <defs>
-                      <linearGradient id="valueGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#6366f1" stopOpacity={0.2}/>
-                        <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
-                      </linearGradient>
-                    </defs>
-                    <XAxis 
-                      dataKey="month" 
-                      stroke="#52525b" 
-                      fontSize={10} 
-                      tickLine={false} 
-                      axisLine={false}
-                    />
-                    <YAxis 
-                      stroke="#52525b" 
-                      fontSize={10} 
-                      tickLine={false} 
-                      axisLine={false}
-                      tickFormatter={(v) => `₹${v/1000}k`}
-                    />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Area 
-                      type="monotone" 
-                      dataKey="Portfolio Value" 
-                      stroke="#6366f1" 
-                      strokeWidth={2}
-                      fillOpacity={1} 
-                      fill="url(#valueGrad)" 
-                    />
-                    <Area 
-                      type="monotone" 
-                      dataKey="Invested Value" 
-                      stroke="#52525b" 
-                      strokeDasharray="4 4"
-                      strokeWidth={1.5}
-                      fill="none" 
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
+
+              {chartView === "reaviz" ? (
+                <PortfolioValueGrowthAreaChart
+                  isDarkMode={true}
+                  currentValue={currentValue}
+                  totalReturns={totalReturns}
+                  returnPercentage={returnPercentage}
+                />
+              ) : (
+                <div className="h-64 pr-2">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={trendData}>
+                      <defs>
+                        <linearGradient id="valueGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#6366f1" stopOpacity={0.2}/>
+                          <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+                      <XAxis 
+                        dataKey="month" 
+                        stroke="#52525b" 
+                        fontSize={10} 
+                        tickLine={false} 
+                        axisLine={false}
+                      />
+                      <YAxis 
+                        stroke="#52525b" 
+                        fontSize={10} 
+                        tickLine={false} 
+                        axisLine={false}
+                        tickFormatter={(v) => `₹${v/1000}k`}
+                      />
+                      <Tooltip content={<CustomTooltip />} />
+                      <Area 
+                        type="monotone" 
+                        dataKey="Portfolio Value" 
+                        stroke="#6366f1" 
+                        strokeWidth={2}
+                        fillOpacity={1} 
+                        fill="url(#valueGrad)" 
+                      />
+                      <Area 
+                        type="monotone" 
+                        dataKey="Invested Value" 
+                        stroke="#52525b" 
+                        strokeDasharray="4 4"
+                        strokeWidth={1.5}
+                        fill="none" 
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
             </div>
 
             {/* Asset Allocation Pie Chart */}

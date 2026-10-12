@@ -9,6 +9,7 @@ from app.api.portfolio import router as portfolio_router
 from app.api.intelligence import router as intelligence_router
 from app.api.suitability import router as suitability_router
 from app.api.chat import router as chat_router
+from app.api.beyond_stocks import router as beyond_stocks_router
 from app.db.session import init_db
 
 # Load root .env
@@ -52,6 +53,10 @@ app.include_router(portfolio_router, prefix="/api/v1")
 app.include_router(intelligence_router, prefix="/api/v1")
 app.include_router(suitability_router, prefix="/api/v1")
 app.include_router(chat_router, prefix="/api/v1")
+
+# Beyond Stocks endpoints (supporting both /api/v1 and /api)
+app.include_router(beyond_stocks_router, prefix="/api/v1")
+app.include_router(beyond_stocks_router, prefix="/api")
 
 @app.get("/health")
 def health_check():
